@@ -1,17 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-
+import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LockIcon, MailIcon, Loader2Icon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -19,8 +18,7 @@ const LoginForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    setError('');
-
+  
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -29,25 +27,96 @@ const LoginForm = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
-        throw new Error(result.error || 'An error occurred during login');
+        // Handle specific error cases
+        switch (response.status) {
+          case 400:
+            toast.error('Invalid credentials', {
+              description: 'Please check your email and password and try again.',
+              duration: 5000,
+            });
+            break;
+          case 401:
+            toast.error('Invalid credentials', {
+              description: 'Please check your email and password and try again.',
+              duration: 5000,
+            });
+            break;
+          case 429:
+            toast.error('Too many attempts', {
+              description: 'Please wait a few minutes before trying again.',
+              duration: 5000,
+            });
+            break;
+          case 503:
+            toast.error('Service unavailable', {
+              description: 'Our servers are currently experiencing issues. Please try again later.',
+              duration: 5000,
+            });
+            break;
+          default:
+            toast.error('Login failed', {
+              description: result.error || 'An unexpected error occurred. Please try again.',
+              duration: 5000,
+            });
+        }
+        return;
       }
-
-      router.push('/user/profile');
+  
+      // Fetch user profile data
+      const userResponse = await fetch('/api/users/me');
+      const userData = await userResponse.json();
+  
+      if (!userResponse.ok) {
+        toast.error('Failed to fetch user data', {
+          description: 'An unexpected error occurred. Please try again.',
+          duration: 5000,
+        });
+        return;
+      }
+  
+      // Show success toast
+      toast.success('Welcome back!', {
+        description: 'Successfully signed in to your account.',
+      });
+  
+      // Redirect to user's profile page using their username
+      router.push(`/${userData.username}`);
+  
     } catch (error) {
-      console.error(error);
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+      // Handle network/connection errors
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        toast.error('Connection error', {
+          description: 'Please check your internet connection and try again.',
+          duration: 5000,
+        });
+      } else {
+        toast.error('Something went wrong', {
+          description: 'An unexpected error occurred. Please try again later.',
+          duration: 5000,
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
-      <div className="flex items-center justify-center px-4 md:px-8 py-8 bg-white">
+    <motion.div 
+      className="min-h-screen grid md:grid-cols-2"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      <motion.div 
+        className="flex items-center justify-center px-4 md:px-8 py-8 bg-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-black mb-2">Welcome back!</h1>
@@ -55,12 +124,6 @@ const LoginForm = () => {
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="flex items-center bg-gray-100 rounded-lg p-3 w-full">
@@ -122,9 +185,14 @@ const LoginForm = () => {
             </div>
           </form>
         </div>
-      </div>
-      <div className="hidden md:block bg-gray-50" />
-    </div>
+      </motion.div>
+      <motion.div 
+        className="hidden md:block bg-gray-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+    </motion.div>
   );
 };
 

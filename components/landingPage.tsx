@@ -19,11 +19,11 @@ const LandingPage = () => {
         transition={{ duration: 0.8 }}
         className="fixed w-full z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-800"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-4">
           <div className="flex justify-between items-center">
             <motion.div
               initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
+              animate={{ x: 0, opacity: 1 }} 
               className="text-2xl font-bold text-gray-900 dark:text-white"
             >
               <Link href="/">edbn</Link>
@@ -54,7 +54,7 @@ const LandingPage = () => {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="inline-block px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-sm mb-8"
           >
-            ✨ Introducing edbn Platform →
+            ✨ Your cozy place on the Internet, made better! →
           </motion.div>
 
           <motion.h1
@@ -85,7 +85,7 @@ const LandingPage = () => {
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <Button size="lg" className="text-lg px-8 py-6">
-              <Link href="/user/signup">Get Started for free →</Link>
+              <Link href="/user/signup">Create your Portfolio Page ✨ →</Link>
             </Button>
           </motion.div>
         </div>

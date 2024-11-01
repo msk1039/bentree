@@ -1,67 +1,115 @@
-import React from 'react';
-import { Github, Twitter, Mail, MapPin } from 'lucide-react';
+import React, { useRef } from 'react';
+import { useInView } from 'framer-motion';
 import { Separator } from "@/components/ui/separator";
 import Link from 'next/link';
+import { motion } from "framer-motion";
 
 const Footer = () => {
-   const developerName = "Kartik and Mayank", location = "Pune, India"; 
+  const footerRef = useRef(null);
+  const isInView = useInView(footerRef, { once: true });
+
+  const location = "Pune";
+
+  const navLinks = [
+    { name: "About Us", href: "/", delay: 0.2 },
+    { name: "Contact", href: "/", delay: 0.3 },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const separatorVariants = {
+    hidden: { scaleX: 0 },
+    visible: {
+      scaleX: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <footer className="w-full pb-8 px-4 bg-[#898985]/5">
-      {/* Tagline */}
-      <Separator className="my-6 bg-[#898985]/20" />
-      <div className="text-center mb-6">
-        <p className="text-lg font-semibold text-[#898985]">
-          Jumpstart your corner of the internet today
-        </p>
-      </div>
+    <motion.footer 
+      ref={footerRef}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={containerVariants}
+      className="w-full py-16 px-4 bg-gradient-to-b from-[#898985]/5 to-[#898985]/10 overflow-hidden"
+    >
+      <motion.div 
+        className="max-w-4xl mx-auto"
+        variants={containerVariants}
+      >
+        <motion.div 
+          className="text-center mb-12"
+          variants={itemVariants}
+        >
+          <h2 className="text-3xl font-bold text-[#898985] tracking-wide">
+            Build your corner on the World Wide Internet!
+          </h2>
+        </motion.div>
 
-      <Separator className="my-6 bg-[#898985]/20" />
+        <motion.div
+          variants={separatorVariants}
+          className="relative"
+        >
+          <Separator className="my-8 bg-[#898985]/20" />
+        </motion.div>
 
-      {/* Main Footer Content */}
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col items-center space-y-6">
-          {/* Developer Credit */}
-          <div className="flex items-center space-x-2 text-[#898985]">
-            <span>Built by</span>
-            <span className="font-semibold hover:text-[#898985]/80 transition-colors cursor-pointer">
-              {developerName}
-            </span>
-          </div>
+        <motion.div 
+          className="flex flex-col items-center space-y-10"
+          variants={containerVariants}
+        >
+          <motion.div 
+            variants={itemVariants}
+            className="flex items-center space-x-2 text-[#898985] text-base font-light"
+          >
+            <span>Crafted in {location}. Built for Academicians.</span>
+          </motion.div>
 
-          {/* Location */}
-          <div className="flex items-center space-x-2 text-[#898985]">
-            <MapPin size={16} />
-            <span>{location}</span>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex space-x-6 text-sm text-[#898985]">
-            <Link href="/" className="hover:text-[#898985]/80 transition-colors">
-              About Us
-            </Link>
-            <Link href="/" className="hover:text-[#898985]/80 transition-colors">
-              Contact
-            </Link>
-            <Link href="/" className="hover:text-[#898985]/80 transition-colors">
-              Privacy
-            </Link>
-          </div>
-
-          {/* Social Icons */}
-          <div className="flex space-x-6 text-[#898985]">
-            <Link href="#" className="hover:text-[#898985]/80 transition-colors">
-              <Github size={20} />
-            </Link>
-            <Link href="#" className="hover:text-[#898985]/80 transition-colors">
-              <Twitter size={20} />
-            </Link>
-            <Link href="#" className="hover:text-[#898985]/80 transition-colors">
-              <Mail size={20} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+          <motion.nav 
+            className="flex flex-wrap justify-center gap-8 text-sm text-[#898985]"
+            variants={containerVariants}
+          >
+            {navLinks.map((link, index) => (
+              <motion.div 
+                key={index}
+                variants={itemVariants}
+                custom={index}
+              >
+                <Link 
+                  href={link.href} 
+                  className="hover:underline transition-all duration-300 text-sm font-light"
+                >
+                  {link.name}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.nav>
+        </motion.div>
+      </motion.div>
+    </motion.footer>
   );
 };
 

@@ -82,7 +82,8 @@ export function AvailableUsername({ username }: AvailableUsernameProps) {
                     <div className="mr-3 bg-white p-2 rounded-lg group-hover:bg-black group-hover:text-white transition-colors duration-300">
                       <ArrowRight className="h-4 w-4" />
                     </div>
-                    <span className="group-hover:text-black transition-colors duration-300">Connect with others</span>
+                    <span className="group-hover:text-black transition-colors duration-300">Create your place on the Internet</span>
+
                   </li>
                 </ul>
               </div>
@@ -129,7 +130,7 @@ export function AvailableUsername({ username }: AvailableUsernameProps) {
             <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300">
               <h2 className="text-3xl font-bold text-black mb-4">Join our community</h2>
               <p className="text-gray-600 leading-relaxed">
-                Connect with others, share your thoughts, and be part of something bigger. Your journey starts with claiming your unique username.
+                Be part of something bigger. Your journey starts with claiming your unique username.
               </p>
               <div className="mt-6 flex justify-center">
                 <div className="flex space-x-2 text-sm text-gray-500">

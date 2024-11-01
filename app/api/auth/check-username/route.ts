@@ -1,6 +1,6 @@
-import { createClient } from '@/app/utils/supabase/server'
-import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
+import { createClient } from '@/app/utils/supabase/server';
+import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 
 const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
 const MAX_REQUESTS = 10; // Max requests per minute
@@ -13,11 +13,11 @@ export async function GET(request: Request) {
     // Get client IP
     const headersList = await headers();
     const ip = headersList.get('x-forwarded-for') || 'unknown';
-    
+
     // Rate limiting check
     const now = Date.now();
     const userRateLimit = rateLimitMap.get(ip);
-    
+
     if (userRateLimit) {
       if (now - userRateLimit.timestamp < RATE_LIMIT_DURATION) {
         if (userRateLimit.count >= MAX_REQUESTS) {
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     } else {
       rateLimitMap.set(ip, { count: 1, timestamp: now });
     }
-    
+
     // Clean up old entries every hour
     if (now % (60 * 60 * 1000) < 1000) {
       for (const [key, value] of rateLimitMap.entries()) {
